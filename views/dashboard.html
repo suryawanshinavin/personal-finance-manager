@@ -8,85 +8,117 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js"></script>
     <style>
         :root {
             --primary-color: #4a5568;
             --secondary-color: #2d3748;
             --accent-color: #4299e1;
         }
+
         .gradient-sidebar {
-            background: linear-gradient(to bottom right, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(to bottom right,
+                    var(--primary-color),
+                    var(--secondary-color));
         }
     </style>
 </head>
 
 <body class="bg-gray-100 font-sans">
     <div class="flex min-h-screen">
-        <!-- Enhanced Sidebar -->
-        <div class="w-72 gradient-sidebar text-white p-6 shadow-2xl">
-            <div class="flex items-center mb-10">
-                <i class="fas fa-chart-line text-3xl mr-3 text-accent-color"></i>
-                <div>
-                    <h1 class="text-2xl font-bold tracking-wide">FinancePro</h1>
-                    <p class="text-xs text-gray-300">Intelligent Finance Management</p>
-                </div>
+        <!-- Sidebar -->
+        <div class="w-64 bg-gray-900 text-white">
+            <!-- Logo Area -->
+            <div class="h-16 flex items-center justify-start border-b border-gray-800 pl-6">
+                <i class="fas fa-wallet w-6 h-6 mr-2"></i>
+                <span class="text-xl font-bold">FinanceTracker</span>
             </div>
 
-            <nav class="space-y-2">
-                <div class="font-semibold text-gray-300 mb-2 uppercase text-xs tracking-wider">
-                    Main
-                </div>
+            <!-- Navigation Menu -->
+            <nav class="mt-6">
+                <!-- Dashboard -->
                 <a href="#"
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-700 transition duration-200 flex items-center">
-                    <i class="fas fa-home mr-3 w-6 text-center"></i>
-                    Dashboard
-                </a>
-                <a href="#"
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-700 transition duration-200 flex items-center">
-                    <i class="fas fa-exchange-alt mr-3 w-6 text-center"></i>
-                    Transactions
+                    class="px-6 py-3 flex items-center space-x-3 text-gray-300 hover:bg-gray-800 hover:text-white cursor-pointer transition-colors duration-200">
+                    <i class="fas fa-home w-5 h-5"></i>
+                    <span>Dashboard</span>
                 </a>
 
-                <div class="font-semibold text-gray-300 mt-6 mb-2 uppercase text-xs tracking-wider">
-                    Financial
-                </div>
+                <!-- Accounts -->
                 <a href="#"
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-700 transition duration-200 flex items-center">
-                    <i class="fas fa-piggy-bank mr-3 w-6 text-center"></i>
-                    Budgets
-                </a>
-                <a href="#"
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-700 transition duration-200 flex items-center">
-                    <i class="fas fa-chart-pie mr-3 w-6 text-center"></i>
-                    Investment
-                </a>
-                <a href="#"
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-700 transition duration-200 flex items-center">
-                    <i class="fas fa-percentage mr-3 w-6 text-center"></i>
-                    Savings Goals
+                    class="px-6 py-3 flex items-center space-x-3 text-gray-300 hover:bg-gray-800 hover:text-white cursor-pointer transition-colors duration-200">
+                    <i class="fas fa-user w-5 h-5"></i>
+                    <span>Accounts</span>
                 </a>
 
-                <div class="font-semibold text-gray-300 mt-6 mb-2 uppercase text-xs tracking-wider">
-                    Tools
+                <!-- Transactions -->
+                <a href="#"
+                    class="px-6 py-3 flex items-center space-x-3 text-gray-300 hover:bg-gray-800 hover:text-white cursor-pointer transition-colors duration-200">
+                    <i class="fas fa-money-bill-transfer w-5 h-5"></i>
+                    <span>Transactions</span>
+                </a>
+
+                <!-- Budget -->
+                <a href="#"
+                    class="px-6 py-3 flex items-center space-x-3 text-gray-300 hover:bg-gray-800 hover:text-white cursor-pointer transition-colors duration-200">
+                    <i class="fas fa-money-bill w-5 h-5"></i>
+                    <span>Budget</span>
+                </a>
+
+                <!-- Investments -->
+                <a href="#"
+                    class="px-6 py-3 flex items-center space-x-3 text-gray-300 hover:bg-gray-800 hover:text-white cursor-pointer transition-colors duration-200">
+                    <i class="fas fa-piggy-bank w-5 h-5"></i>
+                    <span>Investments</span>
+                </a>
+
+                <!-- Goals -->
+                <a href="#"
+                    class="px-6 py-3 flex items-center space-x-3 text-gray-300 hover:bg-gray-800 hover:text-white cursor-pointer transition-colors duration-200">
+                    <i class="fas fa-archive w-5 h-5"></i>
+                    <span>Goals</span>
+                </a>
+
+                <!-- Reports -->
+                <a href="#"
+                    class="px-6 py-3 flex items-center space-x-3 text-gray-300 hover:bg-gray-800 hover:text-white cursor-pointer transition-colors duration-200">
+                    <i class="fas fa-list w-5 h-5"></i>
+                    <span>Reports</span>
+                </a>
+
+                <!-- Bills & Subscriptions -->
+                <a href="#"
+                    class="px-6 py-3 flex items-center space-x-3 text-gray-300 hover:bg-gray-800 hover:text-white cursor-pointer transition-colors duration-200">
+                    <i class="fas fa-file-invoice-dollar w-5 h-5"></i>
+                    <span>Bills & Subs</span>
+                </a>
+
+                <div class="border-t border-gray-800 mt-6 pt-4">
+                    <!-- Settings -->
+                    <a href="#"
+                        class="px-6 py-3 flex items-center space-x-3 text-gray-300 hover:bg-gray-800 hover:text-white cursor-pointer transition-colors duration-200">
+                        <i class="fas fa-gear w-5 h-5"></i>
+                        <span>Settings</span>
+                    </a>
+
+                    <!-- Help -->
+                    <a href="#"
+                        class="px-6 py-3 flex items-center space-x-3 text-gray-300 hover:bg-gray-800 hover:text-white cursor-pointer transition-colors duration-200">
+                        <i class="fas fa-question-circle w-5 h-5"></i>
+                        <span>Help</span>
+                    </a>
                 </div>
-                <a href="#"
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-700 transition duration-200 flex items-center">
-                    <i class="fas fa-cog mr-3 w-6 text-center"></i>
-                    Settings
-                </a>
-                <a href="#"
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-700 transition duration-200 flex items-center">
-                    <i class="fas fa-question-circle mr-3 w-6 text-center"></i>
-                    Support
-                </a>
             </nav>
 
-            <div class="mt-10">
-                <button type="button" onclick="window.location.href = '/logout'"
-                    class="w-full bg-red-600 py-3 rounded-lg hover:bg-red-700 transition flex items-center justify-center">
-                    <i class="fas fa-sign-out-alt mr-3"></i>
-                    Logout
-                </button>
+            <!-- User Profile Area -->
+            <div class="absolute bottom-0 w-64 border-t border-gray-800">
+                <div class="px-6 py-4 flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-gray-700"></div>
+                    <div>
+                        <p class="text-sm font-medium">John Doe</p>
+                        <p class="text-xs text-gray-400">Premium Member</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -94,13 +126,15 @@
         <div class="flex-1 p-10">
             <header class="mb-8 flex justify-between items-center">
                 <div>
-                    <h2 class="text-3xl font-semibold text-gray-800">Dashboard Overview</h2>
+                    <h2 class="text-3xl font-semibold text-gray-800">
+                        Dashboard Overview
+                    </h2>
                     <p class="text-gray-500">Financial insights for January 2025</p>
                 </div>
                 <div class="flex items-center space-x-4">
                     <i class="fas fa-bell text-gray-600 text-xl"></i>
                     <div class="w-10 h-10 bg-gray-300 rounded-full overflow-hidden">
-                        <img src="/api/placeholder/40/40" alt="Profile" class="w-full h-full object-cover">
+                        <img src="/api/placeholder/40/40" alt="Profile" class="w-full h-full object-cover" />
                     </div>
                 </div>
             </header>
