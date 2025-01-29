@@ -6,7 +6,7 @@ const { Sequelize } = require("sequelize");
 const sequelize = new Sequelize(
     "personal_finance_manager_nodejs",
     "root",
-    "",
+    "root",
     {
         host: "localhost",
         dialect: "mysql",

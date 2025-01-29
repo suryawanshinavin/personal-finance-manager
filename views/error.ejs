@@ -1,0 +1,8 @@
+<h1><%= title %></h1>
+<p><%= siteName %></p> <!-- This should now be defined and render properly -->
+
+<h2>Error Details:</h2>
+<p><%= error.message %></p>
+<pre><%= error.stack %></pre> <!-- Optionally, display the stack trace -->
+
+<p>Formatted Date: <%= generalHelper.formatDate(new Date()) %></p>
