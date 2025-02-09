@@ -100,8 +100,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-
-
 // Test MySQL connection
 sequelize.authenticate()
     .then(() => console.log('✅ MySQL connected'))
