@@ -54,35 +54,35 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
-        const loginForm = document.getElementById("login-form");
+        document
+            .getElementById("login-form")
+            .addEventListener("submit", async (event) => {
+                event.preventDefault();
 
-        loginForm.addEventListener("submit", async (event) => {
-            event.preventDefault();
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
 
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+                try {
+                    const response = await axios.post("/api/auth/login", {
+                        email,
+                        password,
+                    });
 
-            try {
-                // Send login request using Axios
-                const response = await axios.post("/api/auth/login", {
-                    email: email,
-                    password: password,
-                });
-
-                // Check if the response status is OK
-                if (response.status === 200) {
-                    // Store the token and redirect (example: to dashboard)
-                    localStorage.setItem("token", response.data.token);
-                    toastr.success(response.data.message);
-                    window.location.href = "/dashboard"; // Redirect to dashboard
-                } else {
-                    alert(response.data.message); // Show error message from backend
+                    if (response.status === 200) {
+                        toastr.success(response.data.message);
+                        window.location.href = "/dashboard"; // Redirect to dashboard
+                    } else {
+                        alert(response.data.message);
+                    }
+                } catch (error) {
+                    if (error.response) {
+                        alert(error.response.data.message); // Show error message from backend
+                    } else {
+                        alert("Error logging in. Please try again.");
+                    }
+                    console.error(error);
                 }
-            } catch (error) {
-                alert("Error logging in. Please try again.");
-                console.error(error);
-            }
-        });
+            });
     </script>
 </body>
 
