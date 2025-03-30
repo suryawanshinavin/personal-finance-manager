@@ -3,18 +3,19 @@
 
 <script>
     // Check if userId exists in localStorage
-    window.addEventListener("DOMContentLoaded", () => {
+    // auth.js - Check user authentication on page load
+    window.onload = function () {
         const userId = localStorage.getItem("userId");
 
         if (!userId) {
-            // Redirect to login page if not found
+            // Redirect to login page if user is not logged in
             window.location.href = "/login";
         }
-    });
+    };
 
     document.getElementById("logout-btn").addEventListener("click", async () => {
         try {
-            localStorage.removeItem("userId")
+            localStorage.removeItem("userId");
             window.location.href = "/login";
         } catch (error) {
             alert("Logout failed!");
