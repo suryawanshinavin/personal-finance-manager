@@ -21,7 +21,7 @@
     "fs": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "mysql2": "^3.12.0",
+    "mysql2": "^3.14.0",
     "path": "^0.12.7",
     "sequelize": "^6.37.5",
     "toastr": "^2.1.4",

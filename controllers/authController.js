@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const session = require("express-session");
 
 // Login function
 exports.login = async (req, res) => {
@@ -10,19 +11,28 @@ exports.login = async (req, res) => {
   }
 
   try {
+    console.log("Login Request Email:", email);
+
     const user = await User.findOne({ where: { email } });
+    console.log("User Found:", user);
+
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
+    console.log("Stored Hashed Password:", user.password);
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log("Password Match Result:", isMatch);
+
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    res.json({ message: "Login successful", user });
+    console.log("user data", user);
+
+    res.json({ message: "Login successful", user: user });
   } catch (error) {
-    console.error(error);
+    console.error("Login Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -38,9 +48,15 @@ exports.register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ username, email, password: hashedPassword });
+    const newUser = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
 
-    res.status(201).json({ message: "User registered successfully", user: newUser });
+    res
+      .status(201)
+      .json({ message: "User registered successfully", user: newUser });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });

@@ -64,15 +64,7 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/dashboard', (req, res) => {
-    if (!req.session.token) {  // Assuming token is stored in session
-        return res.redirect('/login'); // Redirect to login if token is not found
-    }
 
-    const token = req.session.token;
-
-    if (!token) {
-        return res.redirect('/login');
-    }
 
     res.render('dashboard', { 
         title: 'Dashboard',
@@ -80,7 +72,7 @@ app.get('/dashboard', (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-    res.clearCookie('token');
+    // req.session.destroy();
     res.redirect('/login');    
 });
 

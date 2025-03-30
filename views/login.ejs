@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - Personal Finance Manager</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <style>
         body {
             background-color: #f3f4f6;
@@ -54,9 +60,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
-        document
-            .getElementById("login-form")
-            .addEventListener("submit", async (event) => {
+        document.getElementById("login-form").addEventListener("submit", async (event) => {
                 event.preventDefault();
 
                 const email = document.getElementById("email").value;
@@ -68,8 +72,15 @@
                         password,
                     });
 
+                    // console.log(response);
+
                     if (response.status === 200) {
-                        toastr.success(response.data.message);
+                        // toastr.success(response.data.message);
+                        console.log(response.data);
+
+                        localStorage.setItem("userId", response.data.user.id);
+                        localStorage.setItem("email", response.data.user.email);
+
                         window.location.href = "/dashboard"; // Redirect to dashboard
                     } else {
                         alert(response.data.message);
@@ -80,7 +91,7 @@
                     } else {
                         alert("Error logging in. Please try again.");
                     }
-                    console.error(error);
+                    console.log(error);
                 }
             });
     </script>
