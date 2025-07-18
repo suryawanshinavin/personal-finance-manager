@@ -1,6 +1,5 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
-const session = require("express-session");
 
 // Login function
 exports.login = async (req, res) => {
@@ -29,6 +28,8 @@ exports.login = async (req, res) => {
     }
 
     console.log("user data", user);
+
+    req.session.userId = user.id;
 
     res.json({ message: "Login successful", user: user });
   } catch (error) {
@@ -61,4 +62,14 @@ exports.register = async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
+};
+
+exports.logout = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: "Logout failed" });
+    }
+    res.clearCookie("connect.sid"); // optional
+    res.redirect("/");
+  });
 };

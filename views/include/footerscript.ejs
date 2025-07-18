@@ -2,24 +2,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
-    // Check if userId exists in localStorage
-    // auth.js - Check user authentication on page load
-    window.onload = function () {
-        const userId = localStorage.getItem("userId");
 
-        if (!userId) {
-            // Redirect to login page if user is not logged in
-            window.location.href = "/login";
-        }
-    };
+    // window.onload = function () {
+    //     if (!userId) {
+    //         // Redirect to login page if user is not logged in
+    //         window.location.href = "/";
+    //     }
+    // };
 
     document.getElementById("logout-btn").addEventListener("click", async () => {
-        try {
-            localStorage.removeItem("userId");
-            window.location.href = "/login";
-        } catch (error) {
-            alert("Logout failed!");
-            console.error(error);
-        }
+        window.location.href = "/api/auth/logout";
     });
 </script>
