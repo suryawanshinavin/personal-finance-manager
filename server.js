@@ -6,11 +6,8 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const winston = require("winston");
 const sequelize = require("./config/database");
-const authRoutes = require("./routes/auth"); // Authentication routes
 const generalHelper = require("./helpers/generalHelper"); // Import your generalHelper
 const session = require("express-session");
-
-
 
 const isAuthenticated = require("./middlewares/authMiddleware");
 
@@ -87,14 +84,11 @@ app.get("/dashboard", isAuthenticated, (req, res) => {
   });
 });
 
-app.get("/accounts", isAuthenticated, (req, res) => {
-  res.render("pages/accounts", {
-    title: "Accounts",
-    siteName: "Personal Finance Manager",
-  });
-});
+const accountRoutes = require('./routes/accountRoutes');
+app.use('/accounts', accountRoutes);
 
-// API Routes
+
+const authRoutes = require("./routes/auth"); // Authentication routes
 app.use("/api/auth", authRoutes);
 
 // Global Error Handling Middleware
