@@ -79,7 +79,7 @@ app.get("/dashboard", isAuthenticated, (req, res) => {
   const userId = req.session.userId;
   // You can fetch user details if needed
   res.render("dashboard", {
-    title: "Dashboard",
+    title: "Dashboard Overview",
     userId: userId,
   });
 });

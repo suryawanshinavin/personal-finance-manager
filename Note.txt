@@ -1,0 +1,115 @@
+✅ What This Project Is
+
+A Personal Finance Manager helps users:
+
+* Track income & expenses
+* Categorize spending
+* Monitor budgets
+* Manage bank accounts
+* View financial reports
+* Set goals
+* Stay on top of bills and subscriptions
+
+____________________________________________________________________________________________________
+
+
+✅ 1. User Authentication (Login/Register)
+
+    * Routes: /login, /register, /logout
+    * Models: User
+    * Use bcrypt for password hashing
+    * Session/cookie-based login
+
+✅ 2. Accounts Module
+
+    * Purpose: Manage user's bank accounts
+    * Features: Add/Edit/Delete bank accounts
+    * DB Table: accounts (id, user_id, bank_name, balance, type)
+
+✅ 3. Transactions Module
+
+    * Purpose: Record income & expenses
+    * Features: CRUD + Filter by category/date
+    * DB Table: transactions (id, user_id, account_id, amount, type, category, date, note)
+
+✅ 4. Budgeting Module
+
+    * Purpose: Set monthly budget by category
+    * DB Table: budgets (id, user_id, category, amount, month)
+
+✅ 5. Investments Module
+
+    * Purpose: Track investments (stocks, crypto, FD, etc.)
+    * DB Table: investments (id, user_id, type, name, value, date)
+
+✅ 6. Goals Module
+
+    * Purpose: Financial goal setting (e.g., save ₹1 lakh)
+    * DB Table: goals (id, user_id, goal_name, target_amount, current_amount, deadline)
+
+✅ 7. Reports Module
+
+    * Purpose: Monthly/yearly summary, charts
+    * Features: Use Chart.js to visualize data
+    * Backend: Aggregate data using Sequelize queries
+
+✅ 8. Bills & Subscriptions
+
+    * Purpose: Track recurring payments
+    * DB Table: subscriptions (id, user_id, name, amount, frequency, next_due_date)
+
+✅ 9. Settings + Help
+
+    * Settings: Update profile, change password
+    * Help: Static page or FAQs
+
+_______________________________________________________________________________________________________
+
+✅ Key Modules I Expect in a Full Product
+
+| Module             | Purpose                                                       |
+| ------------------ | ------------------------------------------------------------- |
+| **Authentication** | Secure login/register, session management, forgot password    |
+| **Dashboard**      | Clean overview of total balance, income, expenses, and charts |
+| **Accounts**       | Add/manage bank accounts, credit cards, wallets               |
+| **Transactions**   | Add/view income & expenses; filter by category/date/account   |
+| **Budgets**        | Set monthly limits per category; show overspending alerts     |
+| **Goals**          | Set goals (e.g., Save ₹1L for vacation); track progress       |
+| **Reports**        | Visual analytics (charts, trends, CSV download)               |
+| **Investments**    | Track mutual funds, stocks, crypto, FDs                       |
+| **Bills & Subs**   | Recurring payment tracking with reminders                     |
+| **User Settings**  | Edit profile, change password, set currency                   |
+
+_________________________________________________________________________________________________________________________________________
+
+💽 Recommended Database Schema (Simplified)
+
+| Table           | Fields                                                                   | Purpose                    |
+| --------------- | ------------------------------------------------------------------------ | -------------------------- |
+| `users`         | id, name, email, password, createdAt                                     | Login info, profile        |
+| `accounts`      | id, user_id, name, type (bank, card), balance                            | Bank accounts              |
+| `transactions`  | id, user_id, account_id, amount, category, type (income/expense), date   | Income/expenses            |
+| `budgets`       | id, user_id, category, amount, month_year                                | Monthly spending limits    |
+| `goals`         | id, user_id, title, target, current, deadline                            | Wealth tracking            |
+| `subscriptions` | id, user_id, name, amount, frequency, next_due                           | Financial goals            |
+| `investments`   | id, user_id, type, name, value, purchase_date                            | Bills & recurring expenses |
+
+_________________________________________________________________________________________________________________________________________
+
+📈 Bonus Features I May Added Later (Stretch Goals)
+
+    * Smart alerts: “You spent ₹2000 more than usual on food this month.”
+    * OCR receipt scanning (upload and auto-add data)
+    * UPI bill reminder integration
+    * PWA support (installable on phone)
+    * Multiple user roles (admin, basic, premium)
+
+_________________________________________________________________________________________________________________________________________
+
+🔹 Expense Categories
+
+    * Food & Groceries – Daily essentials, groceries, takeout, restaurants.
+    * Transportation – Fuel, public transport, vehicle maintenance.
+    * Utilities & Bills – Electricity, water, internet, phone.
+    * Entertainment – Subscriptions, movies, outings, hobbies.
+    * Healthcare – Doctor visits, medications, health insurance.

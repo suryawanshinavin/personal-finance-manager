@@ -10,7 +10,7 @@ router.get('/', isAuthenticated, async (req, res) => {
 });
 
 // Add account
-router.post('/add', isAuthenticated, async (req, res) => {
+router.post('/', isAuthenticated, async (req, res) => {
     const { name, type, balance } = req.body;
     await Account.create({
         userId: req.session.userId,
