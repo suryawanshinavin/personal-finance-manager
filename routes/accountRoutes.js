@@ -11,16 +11,17 @@ router.get('/', isAuthenticated, async (req, res) => {
 
 // Add account
 router.post('/', isAuthenticated, async (req, res) => {
-    const { name, type, balance } = req.body;
-    await Account.create({
-        userId: req.session.userId,
-        name,
-        type,
-        balance,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-    });
-    res.redirect('/accounts');
+    // const { name, type, balance } = req.body;
+    console.log(req.body);
+    // await Account.create({
+    //     userId: req.session.userId,
+    //     name,
+    //     type,
+    //     balance,
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    // });
+    // res.redirect('/accounts');
 });
 
 // Delete account

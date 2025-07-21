@@ -265,23 +265,49 @@
     });
 
     // Form validation
-    addAccountForm.addEventListener("submit", (e) => {
-      const name = document.getElementById("accountName").value.trim();
-      const type = document.getElementById("accountType").value;
-      const balance = document.getElementById("accountBalance").value;
+    addAccountForm.addEventListener("submit", async (e) => {
+      e.preventDefault(); // 🔹 Always prevent default first
+
+      let formData = new FormData(addAccountForm);
+      let name = formData.get("name");
+      let type = formData.get("type");
+      let balance = formData.get("balance");
+
+      console.log(name, type, balance);
 
       if (!name || !type || !balance) {
-        e.preventDefault();
         alert("Please fill in all required fields");
         return;
       }
 
       if (parseFloat(balance) < 0) {
-        e.preventDefault();
         alert("Balance cannot be negative");
         return;
       }
+
+      try {
+        const res = await fetch("/accounts", {
+          method: "POST",
+          body: new URLSearchParams({
+            name,
+            type,
+            balance
+          }),
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        });
+
+        const data = await res.text(); // or .json() based on response
+        console.log(data);
+
+        // Redirect or show success message
+      } catch (err) {
+        console.error("Error submitting account:", err);
+        alert("An error occurred. Please try again.");
+      }
     });
+
 
     // Edit account function (placeholder)
     function editAccount(accountId) {
@@ -297,7 +323,6 @@
         row.style.animationDelay = `${index * 0.1}s`;
       });
     });
-    
   </script>
 </body>
 

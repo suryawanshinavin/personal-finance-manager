@@ -24,6 +24,10 @@ const Account = sequelize.define('Account', {
         type: DataTypes.DECIMAL(10, 2),
         defaultValue: 0.0,
     },
+    note: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
