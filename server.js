@@ -68,6 +68,11 @@ app.use(
 
 // Routes
 app.get("/", (req, res) => {
+
+  if (req.session.userId) {
+    return res.redirect("/dashboard");
+  }
+
   res.render("login", { title: "Login", siteName: "Personal Finance Manager" });
 });
 
