@@ -1,41 +1,48 @@
 <!-- Toastr JS -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> -->
+
+<!-- jQuery (must come first!) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<!-- Toastr JS (must come after jQuery) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+
 <script>
-    // Mobile sidebar functionality
-    const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
-    const closeSidebar = document.getElementById('closeSidebar');
-    const sidebar = document.getElementById('sidebar');
-    const mobileOverlay = document.getElementById('mobileOverlay');
+  // Mobile sidebar functionality
+  const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+  const closeSidebar = document.getElementById('closeSidebar');
+  const sidebar = document.getElementById('sidebar');
+  const mobileOverlay = document.getElementById('mobileOverlay');
 
-    function openSidebar() {
-        sidebar.classList.remove('-translate-x-full');
-        mobileOverlay.classList.remove('hidden');
-        setTimeout(() => mobileOverlay.classList.remove('opacity-0'), 10);
-        document.body.style.overflow = 'hidden';
+  function openSidebar() {
+    sidebar.classList.remove('-translate-x-full');
+    mobileOverlay.classList.remove('hidden');
+    setTimeout(() => mobileOverlay.classList.remove('opacity-0'), 10);
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebarFn() {
+    sidebar.classList.add('-translate-x-full');
+    mobileOverlay.classList.add('opacity-0');
+    setTimeout(() => {
+      mobileOverlay.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }, 300);
+  }
+
+  mobileSidebarToggle?.addEventListener('click', openSidebar);
+  closeSidebar?.addEventListener('click', closeSidebarFn);
+  mobileOverlay?.addEventListener('click', closeSidebarFn);
+
+  // Close sidebar on window resize to desktop
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 1024) {
+      closeSidebarFn();
     }
+  });
 
-    function closeSidebarFn() {
-        sidebar.classList.add('-translate-x-full');
-        mobileOverlay.classList.add('opacity-0');
-        setTimeout(() => {
-            mobileOverlay.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }, 300);
-    }
-
-    mobileSidebarToggle?.addEventListener('click', openSidebar);
-    closeSidebar?.addEventListener('click', closeSidebarFn);
-    mobileOverlay?.addEventListener('click', closeSidebarFn);
-
-    // Close sidebar on window resize to desktop
-    window.addEventListener('resize', () => {
-        if (window.innerWidth >= 1024) {
-            closeSidebarFn();
-        }
-    });
-
-    document.getElementById("logout-btn").addEventListener("click", async () => {
-        window.location.href = "/api/auth/logout";
-    });
+  document.getElementById("logout-btn").addEventListener("click", async () => {
+    window.location.href = "/api/auth/logout";
+  });
 </script>

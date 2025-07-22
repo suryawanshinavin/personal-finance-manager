@@ -10,15 +10,15 @@ const Account = sequelize.define('Account', {
     },
     userId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     type: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     balance: {
         type: DataTypes.DECIMAL(10, 2),
@@ -30,11 +30,11 @@ const Account = sequelize.define('Account', {
     },
     createdAt: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
     },
     updatedAt: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
     },
 });
 

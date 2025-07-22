@@ -43,6 +43,8 @@ const logger = winston.createLogger({
 });
 
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
+
 
 // Make the helper available globally for all views
 app.use((req, res, next) => {
@@ -57,7 +59,7 @@ app.use((req, res, next) => {
 
 app.use(
   session({
-    secret: "your-secret-key", // use a secure one in production
+    secret: "test", // use a secure one in production
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -84,7 +86,7 @@ app.get("/dashboard", isAuthenticated, (req, res) => {
   const userId = req.session.userId;
   // You can fetch user details if needed
   res.render("dashboard", {
-    title: "Dashboard Overview",
+    title: "Dashboard",
     userId: userId,
   });
 });
