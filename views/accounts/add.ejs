@@ -29,6 +29,7 @@
         </div>
       </header>
 
+
       <main class="p-4 lg:p-10">
 
         <!-- Recent Transactions -->
@@ -40,22 +41,22 @@
               <p class="text-sm text-gray-500">Overview of all your financial accounts</p>
             </div>
 
-            <button id="addAccountBtn" class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-sm">
+            <button type="button" onclick="openAddAccountModal();" id="addAccountBtn" class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-sm">
               <i class="fa-solid fa-plus text-sm"></i>
               <span>Add Account</span>
             </button>
           </div>
 
-          <!-- Table View (Desktop) -->
-          <div class="overflow-x-auto hidden lg:block">
+          <!-- Combined Responsive Table -->
+          <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wide">
                 <tr>
-                  <th class="px-6 py-3 text-left">Name</th>
-                  <th class="px-6 py-3 text-left">Type</th>
-                  <th class="px-6 py-3 text-left">Balance</th>
-                  <th class="px-6 py-3 text-left">Note</th>
-                  <th class="px-6 py-3 text-right">Actions</th>
+                  <th class="px-3 lg:px-6 py-3 text-left">Name</th>
+                  <th class="px-3 lg:px-6 py-3 text-left">Type</th>
+                  <th class="px-3 lg:px-6 py-3 text-left">Balance</th>
+                  <th class="px-3 lg:px-6 py-3 text-left hidden sm:table-cell">Note</th>
+                  <th class="px-3 lg:px-6 py-3 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-100 text-sm text-gray-700">
@@ -65,53 +66,33 @@
                   totalBalance += parseFloat(account.balance);
                   %>
                 <tr class="hover:bg-gray-50">
-                  <td class="px-6 py-4"><%= account.name %></td>
-                  <td class="px-6 py-4"><%= account.type %></td>
-                  <td class="px-6 py-4 font-medium text-green-600"><%= account.balance %></td>
-                  <td class="px-6 py-4"><%= account.note %></td>
-                  <td class="px-6 py-4 text-right space-x-2">
-                    <a href="/accounts/<%= account.id %>/edit" class="text-blue-600 hover:text-blue-800">Edit</a>
-                    <a href="/accounts/<%= account.id %>/delete" class="text-red-600 hover:text-red-800">Delete</a>
+                  <td class="px-3 lg:px-6 py-4 font-medium"><%= account.name %></td>
+                  <td class="px-3 lg:px-6 py-4">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      <%= account.type %>
+                    </span>
+                  </td>
+                  <td class="px-3 lg:px-6 py-4 font-medium text-green-600">₹<%= account.balance %></td>
+                  <td class="px-3 lg:px-6 py-4 hidden sm:table-cell text-gray-500">
+                    <span class="truncate max-w-xs"><%= account.note || '-' %></span>
+                  </td>
+                  <td class="px-3 lg:px-6 py-4 text-right">
+                    <div class="flex justify-end space-x-2">
+                      <button type="button" onclick="openAddAccountModal('<%= account.id %>')" class="text-blue-600 hover:text-blue-800 text-sm">Edit</button>
+                      <a href="/accounts/<%= account.id %>/delete" class="text-red-600 hover:text-red-800 text-sm">Delete</a>
+                    </div>
                   </td>
                 </tr>
                 <% }) %>
               </tbody>
               <tfoot>
                 <tr>
-                  <td colspan="5" class="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-                    Total Balance:  ₹<span class="font-bold text-green-600 underline"><%= totalBalance.toFixed(2) %></span>
+                  <td colspan="5" class="px-3 lg:px-6 py-4 text-left text-sm font-semibold text-gray-900 bg-gray-50">
+                    Total Balance: <span class="font-bold text-green-600 text-lg">₹<%= totalBalance.toFixed(2) %></span>
                   </td>
                 </tr>
               </tfoot>
             </table>
-          </div>
-
-          <!-- Mobile View -->
-          <div class="lg:hidden px-4 py-4 space-y-4 bg-white">
-            <% accounts.forEach(account => { %>
-            <div class="rounded-xl border border-gray-200 p-4 shadow-sm space-y-2 bg-gray-50">
-              <div class="flex justify-between text-sm">
-                <span class="font-medium text-gray-600">Name:</span>
-                <span class="text-gray-900"><%= account.name %></span>
-              </div>
-              <div class="flex justify-between text-sm">
-                <span class="font-medium text-gray-600">Type:</span>
-                <span class="text-gray-900"><%= account.type %></span>
-              </div>
-              <div class="flex justify-between text-sm">
-                <span class="font-medium text-gray-600">Balance:</span>
-                <span class="text-green-700 font-semibold"><%= account.balance %></span>
-              </div>
-              <div class="flex justify-between text-sm">
-                <span class="font-medium text-gray-600">Note:</span>
-                <span class="text-gray-900"><%= account.note %></span>
-              </div>
-              <div class="flex justify-end space-x-3 pt-2">
-                <a href="/accounts/<%= account.id %>/edit" class="text-blue-600 text-sm hover:underline">Edit</a>
-                <a href="/accounts/<%= account.id %>/delete" class="text-red-600 text-sm hover:underline">Delete</a>
-              </div>
-            </div>
-            <% }) %>
           </div>
 
         </div>
@@ -139,6 +120,7 @@
         <div>
           <label for="accountName" class="block mb-1 text-gray-600">Name</label>
           <input type="text" name="name" id="accountName" placeholder="e.g., SBI Savings" class="w-full px-3 py-2 border rounded-md focus:ring focus:ring-blue-200 outline-none border-gray-300" required>
+          <input type="hidden" name="id" id="accountId" />
         </div>
 
         <!-- Type -->
@@ -176,10 +158,6 @@
     </div>
   </div>
 
-  <!-- Overlay for mobile sidebar -->
-  <div id="sidebarOverlay" class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm hidden lg:hidden"></div>
-
-
   <%- include('../include/footer') %>
 
   <script>
@@ -189,55 +167,77 @@
     const cancelBtn = document.getElementById("cancelBtn");
     const addAccountForm = document.getElementById("addAccountForm");
 
-    addAccountBtn.addEventListener("click", () => {
-      addAccountModal.classList.remove("hidden");
-      addAccountModal.classList.add("flex");
-      setTimeout(() => {
-        addAccountModal
-          .querySelector(".transform")
-          .classList.remove("scale-95", "opacity-0");
-        addAccountModal
-          .querySelector(".transform")
-          .classList.add("scale-100", "opacity-100");
-      }, 10);
-    });
+    // ✅ Open modal
+    async function openAddAccountModal(id = null) {
+      console.log("id", id);
 
-    function closeModalHandler() {
-      addAccountModal
-        .querySelector(".transform")
-        .classList.remove("scale-100", "opacity-100");
-      addAccountModal
-        .querySelector(".transform")
-        .classList.add("scale-95", "opacity-0");
+      try {
+
+        if (id) {
+
+          const res = await fetch(`/accounts/${id}`);
+          const data = await res.json();
+
+          console.log("data", data);
+
+          if (!data || !data.account) {
+            alert("Account not found");
+            return;
+          }
+
+          // Populate the form
+          document.getElementById("accountId").value = data.account.id;
+          document.getElementById("accountName").value = data.account.name;
+          document.getElementById("accountType").value = data.account.type;
+          document.getElementById("accountBalance").value = data.account.balance;
+          document.getElementById("accountNote").value = data.account.note;
+
+          // Change button text to "Update"
+          const submitBtn = addAccountForm.querySelector("button[type='submit']");
+          submitBtn.textContent = "Update";
+
+        }
+
+        addAccountModal.classList.remove("hidden");
+        addAccountModal.classList.add("flex");
+        setTimeout(() => {
+          const modalBox = addAccountModal.querySelector(".transform");
+          modalBox.classList.remove("scale-95", "opacity-0");
+          modalBox.classList.add("scale-100", "opacity-100");
+        }, 10);
+
+      } catch (err) {
+        console.error("Error loading account:", err);
+        alert("Failed to load account data.");
+      }
+
+    }
+
+
+    // ✅ Close modal
+    function closeAddAccountModal() {
+      const modalBox = addAccountModal.querySelector(".transform");
+      modalBox.classList.remove("scale-100", "opacity-100");
+      modalBox.classList.add("scale-95", "opacity-0");
       setTimeout(() => {
         addAccountModal.classList.add("hidden");
         addAccountModal.classList.remove("flex");
         addAccountForm.reset();
       }, 300);
     }
-    closeModal.addEventListener("click", closeModalHandler);
-    cancelBtn.addEventListener("click", closeModalHandler);
 
-    // Close modal when clicking outside
-    addAccountModal.addEventListener("click", (e) => {
-      if (e.target === addAccountModal) {
-        closeModalHandler();
-      }
-    });
 
-    // Form validation
-    addAccountForm.addEventListener("submit", async (e) => {
-      e.preventDefault(); // 🔹 Always prevent default first
+    // ✅ Validate and submit the form
+    async function handleAddAccountSubmit(e) {
+      e.preventDefault();
 
       const formData = new FormData(addAccountForm);
-      const formParams = new URLSearchParams(formData); // works directly
+      const formParams = new URLSearchParams(formData);
 
-      let name = formData.get("name");
-      let type = formData.get("type");
-      let balance = formData.get("balance");
-      // let note = formData.get("note");
-
-      console.log(name, type, balance);
+      const id = formData.get("id");
+      const name = formData.get("name");
+      const type = formData.get("type");
+      const balance = formData.get("balance");
 
       if (!name || !type || !balance) {
         alert("Please fill in all required fields");
@@ -250,8 +250,11 @@
       }
 
       try {
-        const res = await fetch("/accounts", {
-          method: "POST",
+        const url = id ? `/accounts/${id}` : "/accounts";
+        const method = id ? "PUT" : "POST";
+
+        const res = await fetch(url, {
+          method,
           body: formParams,
           headers: {
             "Content-Type": "application/x-www-form-urlencoded"
@@ -259,27 +262,94 @@
         });
 
         const data = await res.json();
-        console.log(data);
 
         if (data.success) {
-          // alert(data.message);
           toastr.success(data.message);
-          closeModalHandler();
+          closeAddAccountModal();
+          // Optional: refresh page or update table
+        } else {
+          toastr.error(data.message || "Something went wrong.");
         }
-
-        // Redirect or show success message
       } catch (err) {
-        console.error("Error submitting account:", err);
+        console.error("Submit failed:", err);
         alert("An error occurred. Please try again.");
       }
-    });
-
-    // Edit account function (placeholder)
-    function editAccount(accountId) {
-      // This would open an edit modal with pre-filled data
-      alert(`Edit account with ID: ${accountId}`);
     }
+
+
+    async function fetchAndRenderAccounts() {
+      // try {
+        const res = await fetch('/accounts/list');
+        const data = await res.json();
+
+        console.log("data", data);
+
+        if (!data.success) {
+          toastr.error("Failed to load accounts");
+          return;
+        }
+
+        const accounts = data.accounts;
+        const tableBody = document.getElementById("accountTableBody");
+        const tableFooter = document.getElementById("accountTableFooter");
+
+        tableBody.innerHTML = ""; // Clear previous rows
+        tableFooter.innerHTML = "";
+
+        let total = 0;
+
+        accounts.forEach(account => {
+          total += parseFloat(account.balance);
+
+          const row = `
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4">${account.name}</td>
+            <td class="px-6 py-4">
+              <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">${account.type}</span>
+            </td>
+            <td class="px-6 py-4 font-medium text-green-600">₹${parseFloat(account.balance).toFixed(2)}</td>
+            <td class="px-6 py-4">${account.note || ""}</td>
+            <td class="px-6 py-4 text-right space-x-2">
+              <a href="javascript:void(0)" onclick="editAccount(${account.id})" class="text-blue-600 hover:text-blue-800">Edit</a>
+              <a href="/accounts/${account.id}/delete" class="text-red-600 hover:text-red-800">Delete</a>
+            </td>
+          </tr>
+        `;
+
+          tableBody.innerHTML += row;
+        });
+
+        tableFooter.innerHTML = `
+        <tr>
+          <td colspan="5" class="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+            Total Balance:  ₹<span class="font-bold text-green-600 underline">${total.toFixed(2)}</span>
+          </td>
+        </tr>
+      `;
+      // } catch (err) {
+      //   console.error("Error fetching accounts:", err);
+      //   toastr.error("Server error while loading accounts");
+      // }
+    }
+
+
+    // ✅ Attach event listeners
+    function initAccountModalEvents() {
+      closeModal.addEventListener("click", closeAddAccountModal);
+      cancelBtn.addEventListener("click", closeAddAccountModal);
+      addAccountModal.addEventListener("click", (e) => {
+        if (e.target === addAccountModal) {
+          closeAddAccountModal();
+        }
+      });
+      addAccountForm.addEventListener("submit", handleAddAccountSubmit);
+    }
+
+    // ✅ Initialize once DOM is ready
+    document.addEventListener("DOMContentLoaded", initAccountModalEvents);
+    document.addEventListener("DOMContentLoaded", fetchAndRenderAccounts);
   </script>
+
 </body>
 
 </html>

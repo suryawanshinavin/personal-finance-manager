@@ -7,45 +7,6 @@ const sequelize = require('../config/database');
 
 // View accounts
 router.get('/', isAuthenticated, async (req, res) => {
-
-    // const sampleAccounts = [
-    //     {
-    //         id: 1,
-    //         name: "Savings Account",
-    //         number: "1234567890",
-    //         type: "Savings",
-    //         balance: "$10,000"
-    //     },
-    //     {
-    //         id: 2,
-    //         name: "Cash Wallet",
-    //         number: "N/A",
-    //         type: "Cash",
-    //         balance: "$1,250"
-    //     },
-    //     {
-    //         id: 3,
-    //         name: "Paytm Wallet",
-    //         number: "paytm-9988776655",
-    //         type: "Wallet",
-    //         balance: "$430.75"
-    //     },
-    //     {
-    //         id: 4,
-    //         name: "Mutual Fund Investment",
-    //         number: "MF-34837284",
-    //         type: "Investment",
-    //         balance: "$7,860"
-    //     },
-    //     {
-    //         id: 5,
-    //         name: "Current Account",
-    //         number: "0987654321",
-    //         type: "Bank",
-    //         balance: "$4,320.90"
-    //     }
-    // ];
-
     const sampleAccounts = await Account.findAll({ where: { userId: req.session.userId } });
 
     res.render('accounts/add',
@@ -54,6 +15,19 @@ router.get('/', isAuthenticated, async (req, res) => {
             accounts: sampleAccounts
         });
 });
+
+// GET /accounts/:id
+router.get('/:id', async (req, res) => {
+    const id = req.params.id;
+    const account = await Account.findByPk(id);
+
+    if (!account) {
+        return res.status(404).json({ success: false, message: "Account not found" });
+    }
+
+    res.json({ success: true, account });
+});
+
 
 // Add account
 router.post('/', isAuthenticated, async (req, res) => {
@@ -91,8 +65,79 @@ router.post('/', isAuthenticated, async (req, res) => {
         });
     }
 
-    // res.json(req.body);
 });
+
+router.put('/:id', isAuthenticated, async (req, res) => {
+    const t = await sequelize.transaction();
+
+    try {
+        const { id } = req.params;
+        const { name, type, balance, note } = req.body;
+
+        // Validate
+        if (!name || !type || isNaN(parseFloat(balance))) {
+            return res.status(400).json({
+                success: false,
+                message: 'Name, type, and valid balance are required'
+            });
+        }
+
+        const account = await Account.findOne({
+            where: {
+                id,
+                userId: req.session.userId // Enforce user-level access control
+            }
+        });
+
+        if (!account) {
+            return res.status(404).json({
+                success: false,
+                message: 'Account not found'
+            });
+        }
+
+        // Update values
+        account.name = name;
+        account.type = type;
+        account.balance = parseFloat(balance);
+        account.note = note || null;
+
+        await account.save({ transaction: t });
+        await t.commit();
+
+        res.json({
+            success: true,
+            message: 'Account updated successfully',
+            data: account
+        });
+
+    } catch (error) {
+        await t.rollback();
+        console.error('Account update failed:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to update account',
+            error: error.message
+        });
+    }
+});
+
+
+// GET /accounts/list
+router.get('/list', isAuthenticated, async (req, res) => {
+    try {
+        const accounts = await Account.findAll({
+            where: { userId: req.session.userId },
+            order: [['createdAt', 'DESC']]
+        });
+
+        res.json({ success: true, accounts });
+    } catch (err) {
+        console.error("Failed to fetch accounts:", err);
+        res.status(500).json({ success: false, message: 'Failed to fetch accounts' });
+    }
+});
+
 
 
 // Delete account
