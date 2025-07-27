@@ -146,7 +146,7 @@
 
       try {
 
-        if (id) {
+        if (id !== null) {
 
           const res = await fetch(`/accounts/${id}`);
           const data = await res.json();

@@ -30,8 +30,14 @@
             <span>Accounts</span>
         </a>
 
+        <a href="/transactions"
+            class="mb-1 px-3 py-3 flex items-center space-x-3 cursor-pointer transition-all duration-200 text-gray-300 <%= title === 'Transactions' ? 'bg-gray-800' : '' %> hover:bg-gray-800 hover:text-white rounded-lg">
+            <i class="fas fa-money-bill-transfer w-5 h-5"></i>
+            <span>Transactions</span>
+        </a>
+
         <!-- Transactions with Dropdown -->
-        <div x-data="{ open: <%= title === 'Transactions' || title === 'Add Transaction' ? 'true' : 'false' %> }">
+        <!-- <div x-data="{ open: <%= title === 'Transactions' || title === 'Add Transaction' ? 'true' : 'false' %> }">
             <button @click="open = !open"
                 class="w-full mb-1 px-3 py-3 flex items-center justify-between space-x-3 text-gray-300 hover:bg-gray-800 hover:text-white cursor-pointer transition-all duration-200 rounded-lg">
                 <div class="flex items-center space-x-3">
@@ -51,7 +57,7 @@
                     View All
                 </a>
             </div>
-        </div>
+        </div> -->
 
 
         <!-- Budget -->

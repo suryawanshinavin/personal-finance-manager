@@ -94,6 +94,9 @@ app.get("/dashboard", isAuthenticated, (req, res) => {
 const accountRoutes = require('./routes/accountRoutes');
 app.use('/accounts', accountRoutes);
 
+const transactionRoutes = require('./routes/transactionRoutes');
+app.use('/transactions', transactionRoutes);
+
 
 const authRoutes = require("./routes/auth"); // Authentication routes
 app.use("/api/auth", authRoutes);

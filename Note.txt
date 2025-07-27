@@ -87,12 +87,12 @@ ________________________________________________________________________________
 | Table           | Fields                                                                   | Purpose                    |
 | --------------- | ------------------------------------------------------------------------ | -------------------------- |
 | `users`         | id, name, email, password, createdAt                                     | Login info, profile        |
-| `accounts`      | id, user_id, name, type (bank, card), balance                            | Bank accounts              |
-| `transactions`  | id, user_id, account_id, amount, category, type (income/expense), date   | Income/expenses            |
-| `budgets`       | id, user_id, category, amount, month_year                                | Monthly spending limits    |
-| `goals`         | id, user_id, title, target, current, deadline                            | Wealth tracking            |
-| `subscriptions` | id, user_id, name, amount, frequency, next_due                           | Financial goals            |
-| `investments`   | id, user_id, type, name, value, purchase_date                            | Bills & recurring expenses |
+| `accounts`      | id, userId, name, type (bank, card), balance                             | Bank accounts              |
+| `transactions`  | id, userId, accountId, amount, category, type (income/expense), date     | Income/expenses            |
+| `budgets`       | id, userId, category, amount, month_year                                 | Monthly spending limits    |
+| `goals`         | id, userId, title, target, current, deadline                             | Wealth tracking            |
+| `subscriptions` | id, userId, name, amount, frequency, next_due                            | Financial goals            |
+| `investments`   | id, userId, type, name, value, purchase_date                             | Bills & recurring expenses |
 
 _________________________________________________________________________________________________________________________________________
 

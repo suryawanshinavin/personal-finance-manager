@@ -1,28 +1,28 @@
 const express = require('express');
 const router = express.Router();
 const isAuthenticated = require('../middlewares/authMiddleware');
-const Account = require('../models/account');
+const Transaction = require('../models/transactions');
 const sequelize = require('../config/database');
 
 
-// View accounts
+// View transactions
 router.get('/', isAuthenticated, async (req, res) => {
 
-    res.render('pages/accounts',
+    res.render('pages/transactions',
         {
-            title: 'Accounts',
+            title: 'Transactions',
         });
 });
 
-// Add account
+// Add Transaction
 router.post('/', isAuthenticated, async (req, res) => {
     const t = await sequelize.transaction();
 
     try {
         const { name, type, balance, note } = req.body;
 
-        // Create account record within a transaction
-        const newAccount = await Account.create({
+        // Create Transaction record within a transaction
+        const newTransaction = await Transaction.create({
             userId: req.session.userId,
             name,
             type,
@@ -35,17 +35,17 @@ router.post('/', isAuthenticated, async (req, res) => {
 
         res.status(201).json({
             success: true,
-            message: 'Account created successfully',
-            data: newAccount
+            message: 'Transaction created successfully',
+            data: newTransaction
         });
 
     } catch (error) {
         // Rollback on error
         await t.rollback();
-        console.error('Account creation failed:', error);
+        console.error('Transaction creation failed:', error);
         res.status(500).json({
             success: false,
-            message: 'Failed to create account',
+            message: 'Failed to create Transaction',
             error: error.message
         });
     }
@@ -54,16 +54,16 @@ router.post('/', isAuthenticated, async (req, res) => {
 
 
 
-// GET /accounts/:id
+// GET /transactions/:id
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
-    const account = await Account.findByPk(id);
+    const Transaction = await Transaction.findByPk(id);
 
-    if (!account) {
-        return res.status(404).json({ success: false, message: "Account not found" });
+    if (!Transaction) {
+        return res.status(404).json({ success: false, message: "Transaction not found" });
     }
 
-    res.json({ success: true, account });
+    res.json({ success: true, Transaction });
 });
 
 router.put('/:id', isAuthenticated, async (req, res) => {
@@ -81,69 +81,69 @@ router.put('/:id', isAuthenticated, async (req, res) => {
             });
         }
 
-        const account = await Account.findOne({
+        const Transaction = await Transaction.findOne({
             where: {
                 id,
                 userId: req.session.userId // Enforce user-level access control
             }
         });
 
-        if (!account) {
+        if (!Transaction) {
             return res.status(404).json({
                 success: false,
-                message: 'Account not found'
+                message: 'Transaction not found'
             });
         }
 
         // Update values
-        account.name = name;
-        account.type = type;
-        account.balance = parseFloat(balance);
-        account.note = note || null;
+        Transaction.name = name;
+        Transaction.type = type;
+        Transaction.balance = parseFloat(balance);
+        Transaction.note = note || null;
 
-        await account.save({ transaction: t });
+        await Transaction.save({ transaction: t });
         await t.commit();
 
         res.json({
             success: true,
-            message: 'Account updated successfully',
-            data: account
+            message: 'Transaction updated successfully',
+            data: Transaction
         });
 
     } catch (error) {
         await t.rollback();
-        console.error('Account update failed:', error);
+        console.error('Transaction update failed:', error);
         res.status(500).json({
             success: false,
-            message: 'Failed to update account',
+            message: 'Failed to update Transaction',
             error: error.message
         });
     }
 });
 
 
-// GET /accounts/list
-router.get('/api/getAccounts', isAuthenticated, async (req, res) => {
+// GET api request
+router.get('/api/gettransactions', isAuthenticated, async (req, res) => {
     try {
-        const accounts = await Account.findAll({
+        const transactions = await Transaction.findAll({
             where: { userId: req.session.userId },
             order: [['createdAt', 'DESC']]
         });
 
-        res.json({ success: true, accounts });
+        res.json({ success: true, transactions });
     } catch (err) {
-        console.error("Failed to fetch accounts:", err);
-        res.status(500).json({ success: false, message: 'Failed to fetch accounts' });
+        console.error("Failed to fetch transactions:", err);
+        res.status(500).json({ success: false, message: 'Failed to fetch transactions' });
     }
 });
 
 
 
-// Delete account
+// Delete Transaction
 router.post('/delete/:id', isAuthenticated, async (req, res) => {
     const { id } = req.params;
-    await Account.destroy({ where: { id, userId: req.session.userId } });
-    res.redirect('/accounts');
+    await Transaction.destroy({ where: { id, userId: req.session.userId } });
+    res.redirect('/transactions');
 });
 
 module.exports = router;
