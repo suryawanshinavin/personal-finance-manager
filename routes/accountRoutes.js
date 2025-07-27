@@ -7,27 +7,12 @@ const sequelize = require('../config/database');
 
 // View accounts
 router.get('/', isAuthenticated, async (req, res) => {
-    const sampleAccounts = await Account.findAll({ where: { userId: req.session.userId } });
 
     res.render('accounts/add',
         {
             title: 'Accounts',
-            accounts: sampleAccounts
         });
 });
-
-// GET /accounts/:id
-router.get('/:id', async (req, res) => {
-    const id = req.params.id;
-    const account = await Account.findByPk(id);
-
-    if (!account) {
-        return res.status(404).json({ success: false, message: "Account not found" });
-    }
-
-    res.json({ success: true, account });
-});
-
 
 // Add account
 router.post('/', isAuthenticated, async (req, res) => {
@@ -65,6 +50,20 @@ router.post('/', isAuthenticated, async (req, res) => {
         });
     }
 
+});
+
+
+
+// GET /accounts/:id
+router.get('/:id', async (req, res) => {
+    const id = req.params.id;
+    const account = await Account.findByPk(id);
+
+    if (!account) {
+        return res.status(404).json({ success: false, message: "Account not found" });
+    }
+
+    res.json({ success: true, account });
 });
 
 router.put('/:id', isAuthenticated, async (req, res) => {
@@ -124,7 +123,7 @@ router.put('/:id', isAuthenticated, async (req, res) => {
 
 
 // GET /accounts/list
-router.get('/list', isAuthenticated, async (req, res) => {
+router.get('/api/getAccounts', isAuthenticated, async (req, res) => {
     try {
         const accounts = await Account.findAll({
             where: { userId: req.session.userId },

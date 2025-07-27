@@ -49,7 +49,7 @@
 
           <!-- Combined Responsive Table -->
           <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
+            <table class="min-w-full divide-y divide-gray-200" id="accountsTable">
               <thead class="bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wide">
                 <tr>
                   <th class="px-3 lg:px-6 py-3 text-left">Name</th>
@@ -60,37 +60,10 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-100 text-sm text-gray-700">
-                <% 
-                let totalBalance = 0;
-                accounts.forEach(account => { 
-                  totalBalance += parseFloat(account.balance);
-                  %>
-                <tr class="hover:bg-gray-50">
-                  <td class="px-3 lg:px-6 py-4 font-medium"><%= account.name %></td>
-                  <td class="px-3 lg:px-6 py-4">
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      <%= account.type %>
-                    </span>
-                  </td>
-                  <td class="px-3 lg:px-6 py-4 font-medium text-green-600">₹<%= account.balance %></td>
-                  <td class="px-3 lg:px-6 py-4 hidden sm:table-cell text-gray-500">
-                    <span class="truncate max-w-xs"><%= account.note || '-' %></span>
-                  </td>
-                  <td class="px-3 lg:px-6 py-4 text-right">
-                    <div class="flex justify-end space-x-2">
-                      <button type="button" onclick="openAddAccountModal('<%= account.id %>')" class="text-blue-600 hover:text-blue-800 text-sm">Edit</button>
-                      <a href="/accounts/<%= account.id %>/delete" class="text-red-600 hover:text-red-800 text-sm">Delete</a>
-                    </div>
-                  </td>
-                </tr>
-                <% }) %>
+
               </tbody>
               <tfoot>
-                <tr>
-                  <td colspan="5" class="px-3 lg:px-6 py-4 text-left text-sm font-semibold text-gray-900 bg-gray-50">
-                    Total Balance: <span class="font-bold text-green-600 text-lg">₹<%= totalBalance.toFixed(2) %></span>
-                  </td>
-                </tr>
+
               </tfoot>
             </table>
           </div>
@@ -149,8 +122,8 @@
 
         <!-- Buttons -->
         <div class="flex justify-end gap-2 pt-2 text-sm">
-          <button type="button" id="cancelBtn" class="px-3 py-1.5 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-100 transition">Cancel</button>
           <button type="submit" class="px-4 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition font-medium">Add</button>
+          <button type="button" id="cancelBtn" class="px-3 py-1.5 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-100 transition">Cancel</button>
         </div>
 
       </form>
@@ -266,6 +239,7 @@
         if (data.success) {
           toastr.success(data.message);
           closeAddAccountModal();
+          fetchAndRenderAccounts();
           // Optional: refresh page or update table
         } else {
           toastr.error(data.message || "Something went wrong.");
@@ -278,11 +252,11 @@
 
 
     async function fetchAndRenderAccounts() {
-      // try {
-        const res = await fetch('/accounts/list');
+      try {
+        const res = await fetch('/accounts/api/getAccounts');
         const data = await res.json();
 
-        console.log("data", data);
+        // console.log("data", data);
 
         if (!data.success) {
           toastr.error("Failed to load accounts");
@@ -290,46 +264,64 @@
         }
 
         const accounts = data.accounts;
-        const tableBody = document.getElementById("accountTableBody");
-        const tableFooter = document.getElementById("accountTableFooter");
+        const tableBody = document.getElementById("accountsTable").querySelector("tbody");
+        const tableFooter = document.getElementById("accountsTable").querySelector("tfoot");
 
-        tableBody.innerHTML = ""; // Clear previous rows
+        tableBody.innerHTML = "";
         tableFooter.innerHTML = "";
 
         let total = 0;
 
         accounts.forEach(account => {
+
+          let icon = "";  
+          if (account.type === "Bank") {
+            icon = `<i class="fas fa-bank text-sky-400 mr-2"></i>`;
+          } else if (account.type === "Cash") {
+            icon = `<i class="fas fa-money-bill text-green-400 mr-2"></i>`;
+          } else if (account.type === "wallet") {
+            icon = `<i class="fas fa-wallet text-red-400 mr-2"></i>`;
+          } else if (account.type === "investment") {
+            icon = `<i class="fas fa-chart-line text-yellow-400 mr-2"></i>`;
+          }
+
           total += parseFloat(account.balance);
 
           const row = `
-          <tr class="hover:bg-gray-50">
-            <td class="px-6 py-4">${account.name}</td>
-            <td class="px-6 py-4">
-              <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">${account.type}</span>
-            </td>
-            <td class="px-6 py-4 font-medium text-green-600">₹${parseFloat(account.balance).toFixed(2)}</td>
-            <td class="px-6 py-4">${account.note || ""}</td>
-            <td class="px-6 py-4 text-right space-x-2">
-              <a href="javascript:void(0)" onclick="editAccount(${account.id})" class="text-blue-600 hover:text-blue-800">Edit</a>
-              <a href="/accounts/${account.id}/delete" class="text-red-600 hover:text-red-800">Delete</a>
-            </td>
-          </tr>
-        `;
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4">${account.name}</td>
+          <td class="px-6 py-4">
+            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+              ${icon}${account.type}
+            </span>
+          </td>
+          <td class="px-6 py-4 font-medium text-green-600">₹${parseFloat(account.balance).toFixed(2)}</td>
+          <td class="px-6 py-4">${account.note || ""}</td>
+          <td class="px-6 py-4 text-right space-x-2">
+            <a href="javascript:void(0)" onclick="openAddAccountModal(${account.id})" class="text-blue-600 hover:text-blue-800">
+              <i class="fa-solid fa-pen-to-square"></i>  
+            </a>
+            <a href="/accounts/${account.id}/delete" class="text-red-600 hover:text-red-800">
+              <i class="fa-solid fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+      `;
 
           tableBody.innerHTML += row;
         });
 
         tableFooter.innerHTML = `
-        <tr>
-          <td colspan="5" class="px-6 py-4 text-left text-sm font-semibold text-gray-900">
-            Total Balance:  ₹<span class="font-bold text-green-600 underline">${total.toFixed(2)}</span>
-          </td>
-        </tr>
-      `;
-      // } catch (err) {
-      //   console.error("Error fetching accounts:", err);
-      //   toastr.error("Server error while loading accounts");
-      // }
+      <tr>
+        <td colspan="5" class="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+          Total Balance: ₹<span class="font-bold text-green-600 underline">${total.toFixed(2)}</span>
+        </td>
+      </tr>
+    `;
+      } catch (err) {
+        console.error("Error fetching accounts:", err);
+        toastr.error("Server error while loading accounts");
+      }
     }
 
 
