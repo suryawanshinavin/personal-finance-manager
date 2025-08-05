@@ -30,6 +30,48 @@ router.post('/', isAuthenticated, async (req, res) => {
             note
         }, { transaction: t });
 
+        const lastId = newTransaction.id;
+
+        if (newTransaction) {
+            const insertTimelineSQL = `
+                        INSERT INTO timelines (
+                            associate_id,
+                            payment_type,
+                            amount,
+                            purpose,
+                            note,
+                            created_date,
+                            created_time,
+                            created_at,
+                            created_by,
+                            isActive
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    `;
+
+            const now = new Date();
+            const created_date = now.toISOString().split('T')[0]; // YYYY-MM-DD
+            const created_time = now.toTimeString().split(' ')[0]; // HH:MM:SS
+            const created_at = now.toISOString(); // Full ISO timestamp
+
+            await sequelize.query(insertTimelineSQL, {
+                replacements: [
+                    lastId,     // associate_id
+                    type,                   // payment_type
+                    balance,     // amount as string (because column is varchar)
+                    name,                   // purpose
+                    note || '',             // note
+                    created_date,           // created_date
+                    created_time,           // created_time
+                    created_at,             // created_at
+                    req.session.userId,     // created_by
+                    1,                      // isActive (default to true)
+                ],
+                transaction: t
+            });
+        }
+
+
         // Commit transaction
         await t.commit();
 
