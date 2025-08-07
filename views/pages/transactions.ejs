@@ -77,7 +77,9 @@
                 <i class="fas fa-university absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
                 <select id="filterAccount" class="pl-10 pr-8 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 text-sm appearance-none min-w-[140px]">
                   <option value="">All Accounts</option>
-                  <!-- Account options here -->
+                  <% accounts.map((account) => { %>
+                    <option value="<%= account.id %>"><%= account.name + " (" + account.type + ")" %></option>
+                  <% }) %>
                 </select>
               </div>
 
@@ -239,22 +241,43 @@
             <label for="transactionType" class="block mb-1 text-gray-600">Payment Type</label>
             <div class="flex items-center gap-2">
               <label for="transactionType" class="block mb-1 text-gray-600">Balance: </label>
-              ₹<span id="balance">0.00</span>
+              <span id="balance">0.00</span>
             </div>
           </div>
-          <select name="payment_type" id="transactionType" onchange="getBalance(this)" class="w-full px-3 py-2 border rounded-md focus:ring focus:ring-blue-200 outline-none border-gray-300" required>
+          <select name="accountId" id="transactionType" onchange="getBalance(this)" class="w-full px-3 py-2 border rounded-md focus:ring focus:ring-blue-200 outline-none border-gray-300" required>
             <option value="">Choose</option>
-            <option value="Bank">Bank</option>
+            <% accounts.map((account) => { %>
+            <option value="<%= account.id %>"><%= account.name + " (" + account.type + ")" %></option>
+            <% }) %>
+
+
+            <!-- <option value="Bank">Bank</option>
             <option value="Cash">Cash</option>
             <option value="Wallet">Wallet</option>
-            <option value="Investment">Investment</option>
+            <option value="Investment">Investment</option> -->
           </select>
         </div>
 
         <!-- Balance -->
         <div>
           <label for="transactionAmount" class="block mb-1 text-gray-600">Amount</label>
-          <input type="number" name="Amount" id="transactionAmount" placeholder="0.00" min="0" step="0.01" class="w-full px-3 py-2 border rounded-md focus:ring focus:ring-blue-200 outline-none border-gray-300" required>
+          <input type="number" name="amount" id="transactionAmount" placeholder="0.00" min="0" step="0.01" class="w-full px-3 py-2 border rounded-md focus:ring focus:ring-blue-200 outline-none border-gray-300" required>
+        </div>
+
+        <div>
+          <label for="category" class="block mb-1 text-gray-600">Amount</label>
+          <select name="category" id="category" class="w-full px-3 py-2 border rounded-md focus:ring focus:ring-blue-200 outline-none border-gray-300" required>
+            <option value="">Choose</option>
+            <!-- <% accounts.map((account) => { %>
+            <option value="<%= account.id %>"><%= account.name + " (" + account.type + ")" %></option>
+            <% }) %> -->
+
+
+            <option value="cat1">cat1</option>
+            <option value="cat2">cat2</option>
+            <option value="cat3">cat3</option>
+            <option value="cat4">cat4</option>
+          </select>
         </div>
 
         <!-- Note -->
@@ -354,7 +377,28 @@
 
     async function getBalance(ele) {
       console.log(ele.value);
+
+      try {
+        const res = await fetch(`/transactions/api/getAccount/${ele.value}/balance`);
+        const data = await res.json();
+
+        console.log("data", data);
+
+        if (data.success) {
+          document.getElementById('balance').textContent = `₹${data.totalBalance}`;
+        } else {
+          toastr.error(data.message);
+          document.getElementById('balance').textContent = `₹0.00`;
+        }
+
+      } catch (err) {
+        console.error("Error loading Account Balance:", err);
+        alert("Failed to load Account Balance.");
+      }
+
     }
+
+
 
     async function fetchAndRenderTransactions() {
       const from = document.getElementById("fromDate").value;
@@ -371,6 +415,8 @@
         }).toString();
         const res = await fetch(`/transactions/api/gettransactions?${query}`);
         const data = await res.json();
+
+        console.log("data", data);
 
         const tbody = document.getElementById("transactionsBody");
         const emptyState = document.getElementById("emptyState");
@@ -424,7 +470,7 @@
                                         <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
                                             <i class="fas fa-university text-blue-600 text-xs"></i>
                                         </div>
-                                        <div class="text-sm font-medium text-gray-900">${tx.account.name}</div>
+                                        <div class="text-sm font-medium text-gray-900">${tx.accountId}</div>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
@@ -432,7 +478,7 @@
                                         <div class="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
                                             <i class="fas fa-tag text-purple-600 text-xs"></i>
                                         </div>
-                                        <div class="text-sm text-gray-900">${tx.category.name}</div>
+                                        <div class="text-sm text-gray-900">${tx.category}</div>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
@@ -511,22 +557,24 @@
       const formParams = new URLSearchParams(formData);
 
       const id = formData.get("id");
-      const name = formData.get("name");
       const type = formData.get("type");
-      const balance = formData.get("balance");
+      const accountId = formData.get("accountId");
+      const amount = formData.get("amount");
+      const category = formData.get("category");
+      const note = formData.get("note");
 
-      if (!name || !type || !balance) {
+      if (!type || !accountId || !amount) {
         alert("Please fill in all required fields");
         return;
       }
 
-      if (parseFloat(balance) < 0) {
+      if (parseFloat(amount) < 0) {
         alert("Balance cannot be negative");
         return;
       }
 
       try {
-        const url = id ? `/accounts/${id}` : "/accounts";
+        const url = id ? `/transactions/${id}` : "/transactions";
         const method = id ? "PUT" : "POST";
 
         const res = await fetch(url, {
@@ -539,10 +587,12 @@
 
         const data = await res.json();
 
+        console.log(data);
+
         if (data.success) {
           toastr.success(data.message);
           closeMe();
-          fetchAndRenderAccounts();
+          fetchAndRenderTransactions();
           // Optional: refresh page or update table
         } else {
           toastr.error(data.message || "Something went wrong.");

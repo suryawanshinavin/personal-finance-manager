@@ -3,30 +3,38 @@ const router = express.Router();
 const isAuthenticated = require('../middlewares/authMiddleware');
 const Transaction = require('../models/transactions');
 const sequelize = require('../config/database');
+const Account = require('../models/account');
 
 
 // View transactions
 router.get('/', isAuthenticated, async (req, res) => {
 
-    res.render('pages/transactions',
-        {
-            title: 'Transactions',
-        });
+    const AccountData = await Account.findAll({
+        where: { userId: req.session.userId }
+    });
+
+    res.render('pages/transactions', {
+        title: 'Transactions',
+        // You forgot to pass Account
+        accounts: AccountData
+    });
 });
+
 
 // Add Transaction
 router.post('/', isAuthenticated, async (req, res) => {
     const t = await sequelize.transaction();
 
     try {
-        const { name, type, balance, note } = req.body;
+        const { accountId, type, amount, category, note } = req.body;
 
         // Create Transaction record within a transaction
         const newTransaction = await Transaction.create({
             userId: req.session.userId,
-            name,
+            accountId,
             type,
-            balance: parseFloat(balance),
+            amount: parseFloat(amount),
+            category,
             note
         }, { transaction: t });
 
@@ -36,7 +44,7 @@ router.post('/', isAuthenticated, async (req, res) => {
             const insertTimelineSQL = `
                         INSERT INTO timelines (
                             associate_id,
-                            payment_type,
+                            associate_invoice,
                             amount,
                             purpose,
                             note,
@@ -56,10 +64,10 @@ router.post('/', isAuthenticated, async (req, res) => {
 
             await sequelize.query(insertTimelineSQL, {
                 replacements: [
-                    lastId,     // associate_id
-                    type,                   // payment_type
-                    balance,     // amount as string (because column is varchar)
-                    name,                   // purpose
+                    lastId,                   // associate_id
+                    accountId,             // payment_type
+                    amount,                 // amount as string (because column is varchar)
+                    'Transaction_' + type,      // purpose
                     note || '',             // note
                     created_date,           // created_date
                     created_time,           // created_time
@@ -176,6 +184,31 @@ router.get('/api/gettransactions', isAuthenticated, async (req, res) => {
     } catch (err) {
         console.error("Failed to fetch transactions:", err);
         res.status(500).json({ success: false, message: 'Failed to fetch transactions' });
+    }
+});
+
+router.get('/api/getAccount/:id/balance', isAuthenticated, async (req, res) => {
+    try {
+        const total = await Account.sum('balance', {
+            where: {
+                userId: req.session.userId,
+                id: req.params.id
+            }
+        });
+
+        if (!total) {
+            return res.status(404).json({
+                success: false,
+                message: 'Account not found'
+            });
+
+        }
+
+        res.json({ success: true, totalBalance: total });
+
+    } catch (err) {
+        console.error("Failed to fetch Account Balance:", err);
+        res.status(500).json({ success: false, message: 'Failed to fetch Account Balance' });
     }
 });
 
